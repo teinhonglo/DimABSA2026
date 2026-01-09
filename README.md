@@ -28,6 +28,14 @@
 
 # 📢 **News**
 
+## **22 December 2025**
+
+- We have now released the training and development dataset for Swahili for [Track B](https://www.codabench.org/competitions/11139/#/results-tab). Train and dev splits are available for all languages.
+
+## **15 December 2025**
+
+- We have now released the training and development dataset for Nigerian Pidgin for [Track B](https://www.codabench.org/competitions/11139/#/results-tab).
+
 ## **11 November 2025**
 
 - We have released the competition website for [Track B](https://www.codabench.org/competitions/11139/#/results-tab). Both Track A and Track B are released now.
@@ -335,32 +343,6 @@ Input:
   ```
 </details>
 
-<details>
-<summary>Finance</summary>
-
-Input:
-  ```json
-  
-  {
-      "ID": "F001",
-      "Text": "The pandemic led to a record low in net income."
-  }
-  ```
-  Output:
-  ```json
-  {
-      "ID": "F001",
-      "Triplet":[
-          {
-              "Aspect": "net income",
-              "Opinion": "record low",
-              "VA": "2.14#7.67"
-          }
-      ]
-  }
-  ```
-</details>
-
 
 ### Subtask 3: Dimensional Aspect Sentiment Quad Prediction (DimASQP)
 Given a text, extract all **(A, C, O, VA)** quadruplets, where A denotes an aspect term, C an aspect category, O an opinion term, and VA a valence-arousal score. This extends Aspect Sentiment Quad Prediction (ASQP) (Cai et al., 2021; Zhang et al., 2021). The only difference between this subtask and Subtask 2 (triplet extraction) is the addition of the aspect category element.  
@@ -463,32 +445,6 @@ Input:
               "Category": "ROOMS#CLEANLINESS",
               "Opinion": "perfectly clean",
               "VA": "7.88#8.33"
-          }
-      ]
-  }
-  ```
-</details>
-
-<details>
-<summary>Finance</summary>
-
-Input:
-  ```json
-  {
-      "ID": "F001",
-      "Text": "The pandemic led to a record low in net income."
-  }
-  ```
-  Output:
-  ```json
-  {
-      "ID": "F001",
-      "Quadruplet":[
-          {
-              "Aspect": "net income",
-              "Category": "NULL#PROFIT"
-              "Opinion": "record low",
-              "VA": "2.14#7.67"
           }
       ]
   }
@@ -619,13 +575,12 @@ You can find the datasets [here](https://github.com/DimABSA/DimABSA2026/tree/mai
 
 | No. | Language | Code | Subtask 1<br>DimASR | Dataset Release |
 |:---:|:----------:|:------:|:------------------:|:----------------:|
-| 1 | [German](https://en.wikipedia.org/wiki/German_language) | deu | Politics | ✅ Released |
-| 2 | [English](https://en.wikipedia.org/wiki/English_language) | eng | Environmental Protection | ✅ Released |
-| 3 | [Hausa](https://en.wikipedia.org/wiki/Hausa_language) | hau | Politics | Coming soon |
-| 4 | [Kinyarwanda](https://en.wikipedia.org/wiki/Kinyarwanda) | kin | Politics |  Coming soon |
-| 5 | [Swahili](https://en.wikipedia.org/wiki/Swahili_language) | swa | Politics | Coming soon |
-| 6 | [Twi](https://en.wikipedia.org/wiki/Akan_language) | twi | Politics |  Coming soon |
-| 7 | [Chinese](https://en.wikipedia.org/wiki/Chinese_language) | zho | Environmental Protection | Coming soon |
+| 1 | [English](https://en.wikipedia.org/wiki/English_language) | eng | Environmental Protection | ✅ Released |
+| 2 | [German](https://en.wikipedia.org/wiki/German_language) | deu | Politics | ✅ Released |
+| 3 | [Chinese](https://en.wikipedia.org/wiki/Chinese_language) | zho | Environmental Protection | ✅ Released |
+| 4 | [Nigerian-Pidgin](https://en.wikipedia.org/wiki/Nigerian_Pidgin) | pcm | Politics | ✅ Released |
+| 5 | [Swahili](https://en.wikipedia.org/wiki/Swahili_language) | swa | Politics | ✅ Released |
+
 
 
 # Evaluation
@@ -725,8 +680,8 @@ You can use the provided examples as a reference and then extend or replace them
 |-------------------------------|------------------------------------------------|
 | Sample Data Ready             | ~15 July 2025~                                    |
 | Training Data Ready           | 30 September 2025                                |
-| Evaluation Start              | 10 January 2026                                 |
-| Evaluation End                | 31 January 2026                                 |
+| Evaluation Start              | 12 January 2026                                 |
+| Evaluation End                | 30 January 2026                                 |
 | System Description Paper Due  | February 2026                                   |
 | Notification to Authors       | March 2026                                      |
 | Camera Ready Due              | April 2026                                      |
@@ -747,6 +702,133 @@ Please follow the guidelines shared [here](https://docs.google.com/document/d/1I
 # Dataset paper
 
 We will soon release a dataset paper that describes the data collection, annotation process, and baseline experiments. This paper will provide additional details and information that will be useful for the task participants.
+
+
+# Competition Rules and Terms
+
+<details>
+  <summary>1. Consent to Public Release of Scores</summary>
+  <ul>
+    <li>By submitting results, you consent to the public release of your scores on:
+      <ul>
+        <li>the competition website,</li>
+        <li>at the designated workshop,</li>
+        <li>in associated proceedings.</li>
+      </ul>
+    </li>
+    <li>Task organizers have discretion over the release and choice of metrics.</li>
+    <li>Scores may include:
+      <ul>
+        <li>automatic and manual quantitative judgments,</li>
+        <li>qualitative judgments,</li>
+        <li>other metrics as deemed appropriate.</li>
+      </ul>
+    </li>
+  </ul>
+</details>
+
+<details>
+  <summary>2. Score Release and Validity</summary>
+  <ul>
+    <li>Task organizers reserve the right to withhold scores for:
+      <ul>
+        <li>incomplete submissions,</li>
+        <li>erroneous submissions,</li>
+        <li>deceptive submissions,</li>
+        <li>rule-violating submissions.</li>
+      </ul>
+    </li>
+    <li>Inclusion of a submission's scores does not constitute endorsement.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>3. Team Participation Rules</summary>
+  <ul>
+    <li>Participants may be involved in only one team.</li>
+    <li>Exceptions may be granted with prior approval from organizers.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>4. Account Management</summary>
+  <ul>
+    <li>Each team must create and use exactly one account on the designated platform.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>5. Team Constitution</summary>
+  <ul>
+    <li>Team membership cannot be changed after the evaluation period begins.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>6. Development Period Rules</summary>
+  <ul>
+    <li>Teams can submit up to 999 submissions.</li>
+    <li>Results are visible only to the submitting team.</li>
+    <li>Leaderboard is disabled.</li>
+    <li>Warnings and errors are visible for each submission.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>7. Evaluation Period Rules</summary>
+  <ul>
+    <li>Teams are limited to 3 submissions.</li>
+    <li>Only the last submission is considered official.</li>
+    <li>Warnings and errors are visible for each submission.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>8. Post-Competition</summary>
+  <ul>
+    <li>Gold labels will be released after the competition.</li>
+    <li>Teams are encouraged to report results on all system variants in their description paper.</li>
+    <li>Official submission results must be clearly indicated.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>9. Public Release of Submissions</summary>
+  <ul>
+    <li>Final team submissions may be made public after the evaluation period.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>10. Disclaimer about the Datasets</summary>
+  <ul>
+    <li>Organizers and affiliated institutions provide no warranties on dataset correctness or completeness.</li>
+    <li>They are not liable for dataset access or usage.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>11. Peer Review Process</summary>
+  <ul>
+    <li>Each participant will review another team's system description paper.</li>
+  </ul>
+</details>
+
+<details>
+  <summary>12. Dataset Usage Restrictions</summary>
+  <ul>
+    <li>Datasets should only be used for scientific or research purposes.</li>
+    <li>Any other use is explicitly prohibited.</li>
+    <li>Datasets must not be redistributed or shared with third parties.</li>
+    <li>Interested parties should be directed to the official website.</li>
+  </ul>
+</details>
+<details>
+  <summary>13. Final ranking</summary>
+  <ul>
+    <li>To be included in the official task ranking, you **MUST** submit a system description paper.</li>
+  </ul>
+</details>
 
 
 # Communication
@@ -781,16 +863,6 @@ dimabsa-organizers@googlegroups.com
 |HOTEL, ROOMS, FACILITIES, ROOM_AMENITIES, SERVICE, LOCATION, FOOD_DRINKS|
 |**Attribute Labels**|
 |GENERAL, PRICE, COMFORT, CLEANLINESS, QUALITY, DESIGN_FEATURES, STYLE_OPTIONS, MISCELLANEOUS|
-
-## Finance
-|Entity Labels|
-|-------------|
-|MARKET, COMPANY, BUSINESS, PRODUCT|
-|**Attribute Labels**|
-|GENERAL, SALES, PROFIT, AMOUNT, PRICE, COST|
-> https://github.com/chakki-works/chABSA-dataset
-
-
 
 # Resources
 
