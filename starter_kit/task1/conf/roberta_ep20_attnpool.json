@@ -1,0 +1,16 @@
+{
+  "trainer_args": {
+    "seed": 42,
+    "train_batch_size": 16,
+    "eval_batch_size": 32,
+    "accumulate_steps": 2,
+    "max_len": 128,
+    "num_epochs": 20,
+    "learning_rate": 1e-05
+  },
+  "model_args": {
+    "model_name": "FacebookAI/xlm-roberta-large",
+    "pool_type": "attn",
+    "dropout": 0.1
+  }
+}
