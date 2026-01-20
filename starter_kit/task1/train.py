@@ -15,7 +15,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
-from model import TransformerVARegressor
+import model as model_module
 from trainer import Trainer, VADataset
 
 
@@ -49,6 +49,7 @@ def main():
 
     trainer_args = conf.get("trainer_args", {})
     model_args = conf.get("model_args", {})
+    model_class_name = model_args.get("model_class", "TransformerVARegressor")
 
     seed = int(trainer_args.get("seed", 42))
     set_seed(seed)
@@ -89,29 +90,37 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[train] Using device: {device}")
 
-    model = TransformerVARegressor(**model_args).to(device)
+    try:
+        ModelClass = getattr(model_module, model_class_name)
+    except AttributeError:
+        raise ValueError(
+            f"[train] Unknown model_class='{model_class_name}' in model_args. "
+            f"Please check your config or model.py."
+        )
+
+    model = ModelClass(**model_args).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
 
     if args.checkpoint is not None:
-    print(f"[train.py] Loading checkpoint from {args.checkpoint}")
-    ckpt = torch.load(args.checkpoint, map_location=device)
+        print(f"[train.py] Loading checkpoint from {args.checkpoint}")
+        ckpt = torch.load(args.checkpoint, map_location=device)
 
-    if isinstance(ckpt, dict):
-        if "model_state_dict" in ckpt:
-            state_dict = ckpt["model_state_dict"]
-        elif "state_dict" in ckpt:
-            state_dict = ckpt["state_dict"]
+        if isinstance(ckpt, dict):
+            if "model_state_dict" in ckpt:
+                state_dict = ckpt["model_state_dict"]
+            elif "state_dict" in ckpt:
+                state_dict = ckpt["state_dict"]
+            else:
+                state_dict = ckpt
         else:
             state_dict = ckpt
-    else:
-        state_dict = ckpt
 
-    missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
-    print(f"[train.py] checkpoint loaded with strict=False")
-    if missing_keys:
-        print(f"[train.py] Missing keys: {missing_keys}")
-    if unexpected_keys:
-        print(f"[train.py] Unexpected keys: {unexpected_keys}")
+        missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+        print(f"[train.py] checkpoint loaded with strict=False")
+        if missing_keys:
+            print(f"[train.py] Missing keys: {missing_keys}")
+        if unexpected_keys:
+            print(f"[train.py] Unexpected keys: {unexpected_keys}")
 
     trainer = Trainer(
                 model=model, 

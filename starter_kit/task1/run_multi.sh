@@ -12,15 +12,16 @@ lang=eng
 domain=laptop
 
 data_root=./data
-exp_root=./exp
+exp_root=./exp_multi
 
 conf=./conf/baseline.json
 
+test_lang=eng
+test_domains="restaurant laptop"
 test_sets="dev test"
 stage=1
 stop_stage=100000
 checkpoint=
-affix=
 
 ########################################
 # env & options
@@ -29,7 +30,7 @@ affix=
 . ./parse_options.sh || exit 1
 
 data_dir=${data_root}/${lang}_${domain}
-exp_tag=$(basename "${conf}" .json)$affix
+exp_tag=$(basename "${conf}" .json)
 exp_dir=${exp_root}/${exp_tag}/${lang}_${domain}
 out_dir=${exp_dir}/
 
@@ -81,32 +82,41 @@ fi
 ########################################
 if [ ${stage} -le 3 ] && [ ${stop_stage} -ge 3 ]; then
   echo "===== stage 3: test / inference ====="
-  for test_set in $test_sets; do
-    python test.py \
-      --test_json  "${data_dir}/${test_set}.json" \
-      --model_dir  "${exp_dir}" \
-      --lang ${lang} \
-      --domain ${domain} \
-      --output_dir "${out_dir}"/$test_set
-   done
+  for domain in $test_domains; do
+    for test_set in $test_sets; do
+      data_dir=${data_root}/${test_lang}_${domain}
+      echo "test_json: ${data_dir}/${test_set}.json"
+      echo "output_dir: ${out_dir}"/${domain}_$test_set
+      python test.py \
+        --test_json  "${data_dir}/${test_set}.json" \
+        --model_dir  "${exp_dir}" \
+        --lang eng \
+        --domain ${domain} \
+        --output_dir "${out_dir}"/${domain}_$test_set
+     done
+  done
 fi
 
 if [ ${stage} -le 4 ] && [ ${stop_stage} -ge 4 ]; then
   echo "===== stage 4: evaluation: dev set ====="
-  python evaluation.py \
-    --gold_json "${data_dir}/dev.json" \
-    --pred_json "${out_dir}/dev/predictions.json" > ${out_dir}/dev/metrics.log
-  head ${exp_root}/${exp_tag}/eng_{laptop,restaurant}/dev/metrics.log
+  for domain in $test_domains; do
+    data_dir=${data_root}/${test_lang}_${domain}
+    python evaluation.py \
+        --gold_json "${data_dir}/dev.json" \
+        --pred_json "${out_dir}/${domain}_dev/predictions.json" > ${out_dir}/${domain}_dev/metrics.log
+  done
+  head ${out_dir}/{laptop,restaurant}_dev/metrics.log
 fi
 
+
 ########################################
-# stage 5: create submission (test set)
+# stage 4: create submission (test set)
 ########################################
-if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
-  echo "===== stage 5: create submission: test set ====="
+if [ ${stage} -le 4 ] && [ ${stop_stage} -ge 4 ]; then
+  echo "===== stage 4: create submission: test set ====="
   rm -rf ${exp_root}/${exp_tag}/submission
   mkdir -p ${exp_root}/${exp_tag}/submission
-  cp ${out_dir}/test/pred_* ${exp_root}/${exp_tag}/submission/
+  cp ${out_dir}/*test/pred_* ${exp_root}/${exp_tag}/submission/
   python create_submission.py \
     --output_dir "${exp_root}/${exp_tag}/submission"
 fi

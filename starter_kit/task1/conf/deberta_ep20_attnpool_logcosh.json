@@ -9,9 +9,9 @@
     "learning_rate": 1e-05
   },
   "model_args": {
-    "model_name": "answerdotai/ModernBERT-large",
-    "use_modernbert": true,
+    "model_name": "microsoft/deberta-v3-large",
     "pool_type": "attn",
+    "loss_type": "logcosh",
     "dropout": 0.1
   }
 }

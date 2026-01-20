@@ -1,0 +1,26 @@
+{
+  "trainer_args": {
+    "seed": 42,
+    "train_batch_size": 16,
+    "eval_batch_size": 32,
+    "accumulate_steps": 2,
+    "max_len": 128,
+    "num_epochs": 20,
+    "learning_rate": 1e-05
+  },
+  "model_args": {
+    "model_class": "TransformerVARegressorCls",
+    "model_name": "boltuix/bert-emotion",
+    "pool_type": "attn",
+    "dropout": 0.1,
+    "loss_type": "mse",
+    "bin_size": 0.25,
+    "use_cls_head": true,
+    "disable_inner_dropout": true,
+    "lambda_reg": 1.0,
+    "lambda_cls": 1.0,
+    "ensemble_alpha": 0.5,
+    "score_min": 1.0,
+    "score_max": 9.0
+  }
+}

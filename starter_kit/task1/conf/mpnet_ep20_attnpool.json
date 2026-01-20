@@ -9,8 +9,7 @@
     "learning_rate": 1e-05
   },
   "model_args": {
-    "model_name": "answerdotai/ModernBERT-large",
-    "use_modernbert": true,
+    "model_name": "sentence-transformers/all-mpnet-base-v2",
     "pool_type": "attn",
     "dropout": 0.1
   }

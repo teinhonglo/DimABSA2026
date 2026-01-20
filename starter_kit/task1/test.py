@@ -11,8 +11,8 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
-from model import TransformerVARegressor, VADataset
-from trainer import predict
+import model as model_module
+from trainer import predict, VADataset
 
 
 def extract_num(s: str) -> int:
@@ -52,8 +52,11 @@ def main():
     parser.add_argument("--test_json", required=True, help="Path to test.json produced by data_prep.py")
     parser.add_argument("--model_dir", required=True, help="Directory with best_model.pt and configs")
     parser.add_argument("--output_dir", required=True, help="Directory to store prediction files")
+    parser.add_argument("--lang", required=True)
+    parser.add_argument("--domain", required=True)
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--max_len", type=int, default=128)
+    parser.add_argument("--ensemble_alpha", type=float, default=None)
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)
@@ -70,7 +73,12 @@ def main():
             model_args = json.load(f)
     else:
         model_args = {}
+    
+    if args.ensemble_alpha:
+        model_args["ensemble_alpha"] = args.ensemble_alpha
 
+    print(f"model_args {model_args}")
+    model_class_name = model_args.pop("model_class", "TransformerVARegressor")
     trainer_args_path = os.path.join(args.model_dir, "trainer_args.json")
     trainer_args = {}
     if os.path.exists(trainer_args_path):
@@ -97,11 +105,17 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[test] Using device: {device}")
 
-    model = TransformerVARegressor(**model_args).to(device)
+    try:
+        ModelClass = getattr(model_module, model_class_name)
+    except AttributeError:
+        raise ValueError(
+            f"[test] Unknown model_class='{model_class_name}' in model_args.json. "
+            f"Please check your config or model.py."
+        )
+
+    model = ModelClass(**model_args).to(device)
 
     model_path = os.path.join(args.model_dir, "best_model.pt")
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"best_model.pt not found in {args.model_dir}")
     state_dict = torch.load(model_path, map_location=device)
     model.load_state_dict(state_dict)
 
@@ -119,14 +133,9 @@ def main():
 
     # Try to recover lang/domain from meta.json (copied during train.py)
     meta_path = os.path.join(args.model_dir, "meta.json")
-    lang = "lang"
-    domain = "domain"
-    if os.path.exists(meta_path):
-        with open(meta_path, "r", encoding="utf-8") as f:
-            meta = json.load(f)
-        lang = meta.get("lang", lang)
-        domain = meta.get("domain", domain)
-
+    lang = args.lang
+    domain = args.domain
+    
     # Save in official submission format for this lang/domain.
     submit_path = os.path.join(args.output_dir, f"pred_{lang}_{domain}.jsonl")
     df_to_jsonl(test_df, submit_path)

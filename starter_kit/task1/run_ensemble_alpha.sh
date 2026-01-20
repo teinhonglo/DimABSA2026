@@ -16,11 +16,12 @@ exp_root=./exp
 
 conf=./conf/baseline.json
 
-test_sets="dev test"
+test_sets="dev"
 stage=1
 stop_stage=100000
 checkpoint=
 affix=
+ensemble_alpha=0.0
 
 ########################################
 # env & options
@@ -87,6 +88,7 @@ if [ ${stage} -le 3 ] && [ ${stop_stage} -ge 3 ]; then
       --model_dir  "${exp_dir}" \
       --lang ${lang} \
       --domain ${domain} \
+      --ensemble_alpha $ensemble_alpha \
       --output_dir "${out_dir}"/$test_set
    done
 fi
@@ -95,20 +97,9 @@ if [ ${stage} -le 4 ] && [ ${stop_stage} -ge 4 ]; then
   echo "===== stage 4: evaluation: dev set ====="
   python evaluation.py \
     --gold_json "${data_dir}/dev.json" \
-    --pred_json "${out_dir}/dev/predictions.json" > ${out_dir}/dev/metrics.log
-  head ${exp_root}/${exp_tag}/eng_{laptop,restaurant}/dev/metrics.log
+    --pred_json "${out_dir}/dev/predictions.json" > ${out_dir}/dev/${ensemble_alpha}.metrics.log
 fi
 
-########################################
-# stage 5: create submission (test set)
-########################################
-if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
-  echo "===== stage 5: create submission: test set ====="
-  rm -rf ${exp_root}/${exp_tag}/submission
-  mkdir -p ${exp_root}/${exp_tag}/submission
-  cp ${out_dir}/test/pred_* ${exp_root}/${exp_tag}/submission/
-  python create_submission.py \
-    --output_dir "${exp_root}/${exp_tag}/submission"
-fi
+head ${out_dir}/dev/*metrics.log
 
 echo "[run.sh] done."
